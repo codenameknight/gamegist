@@ -11,6 +11,9 @@ const isReady = ref(false);
 const searchFocused = ref(false);
 
 onMounted(async () => {
+  // Supabase'i uyandır
+  supabase.from("profiles").select("id").limit(1).maybeSingle();
+
   const {
     data: { session },
   } = await supabase.auth.getSession();
