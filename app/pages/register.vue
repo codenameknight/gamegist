@@ -25,6 +25,14 @@ async function register() {
     return;
   }
 
+  // Email alınmış mı kontrol et
+  const {
+    data: { user: existingEmailUser },
+  } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: "dummy",
+  });
+
   const { data, error: err } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
@@ -36,7 +44,11 @@ async function register() {
   });
 
   if (err) {
-    error.value = err.message;
+    if (err.message.includes("already registered")) {
+      error.value = "Bu email adresi zaten kayıtlı!";
+    } else {
+      error.value = err.message;
+    }
     pending.value = false;
     return;
   }
