@@ -17,21 +17,13 @@ async function register() {
     .from("profiles")
     .select("id")
     .eq("username", username.value)
-    .single();
+    .maybeSingle();
 
   if (existingUser) {
     error.value = "Bu kullanıcı adı zaten alınmış!";
     pending.value = false;
     return;
   }
-
-  // Email alınmış mı kontrol et
-  const {
-    data: { user: existingEmailUser },
-  } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: "dummy",
-  });
 
   const { data, error: err } = await supabase.auth.signUp({
     email: email.value,
@@ -53,7 +45,13 @@ async function register() {
     return;
   }
 
-  // Email doğrulama gerekiyor
+  // Email zaten kayıtlıysa identities boş gelir
+  if (data.user && data.user.identities?.length === 0) {
+    error.value = "Bu email adresi zaten kayıtlı!";
+    pending.value = false;
+    return;
+  }
+
   router.push("/verify-email");
   pending.value = false;
 }
