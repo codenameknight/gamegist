@@ -12,6 +12,19 @@ async function register() {
   pending.value = true;
   error.value = "";
 
+  // Username alınmış mı kontrol et
+  const { data: existingUser } = await (supabase as any)
+    .from("profiles")
+    .select("id")
+    .eq("username", username.value)
+    .single();
+
+  if (existingUser) {
+    error.value = "Bu kullanıcı adı zaten alınmış!";
+    pending.value = false;
+    return;
+  }
+
   const { data, error: err } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
