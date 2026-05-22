@@ -79,7 +79,7 @@ async function onReviewSubmitted() {
           </p>
           <p v-if="averageRating" class="text-purple-500 text-lg">
             🎮 {{ averageRating }} / 5
-            <span class="text-gray-400 text-sm">(GameHub)</span>
+            <span class="text-gray-400 text-sm">(Gamegist)</span>
           </p>
           <div class="flex flex-wrap gap-2">
             <AppBadge v-for="genre in game.genres" :key="genre.id">
